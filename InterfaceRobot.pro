@@ -16,9 +16,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    mygraphicsscene.cpp
+    mygraphicsscene.cpp \
+    mymap.cpp
 
 HEADERS  += mainwindow.h \
-    mygraphicsscene.h
+    mygraphicsscene.h \
+    mymap.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    imagens.qrc

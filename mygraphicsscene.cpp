@@ -2,6 +2,7 @@
 #include <QMenu>
 #include <QGraphicsSceneContextMenuEvent>
 #include <QMessageBox>
+#include <QGraphicsPixmapItem>
 
 void MyGraphicsScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
@@ -15,8 +16,11 @@ void MyGraphicsScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QAction *res = menu.exec(event->screenPos());
     if(res == a1)
     {
-        m.setText(a1->text());
-        m.exec();
+        QImage image(":/Resources/place_icon.png");
+        QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(image));
+        item->setFlags(QGraphicsItem::ItemIsSelectable);
+        item->setPos(event->scenePos());
+        this->addItem(item);
     }
     else if (res == a2)
     {

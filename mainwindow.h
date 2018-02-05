@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <mymap.h>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    MyMap myMap;
+     void Clear();
 };
 
 #endif // MAINWINDOW_H
