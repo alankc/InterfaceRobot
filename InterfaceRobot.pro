@@ -17,11 +17,18 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     mygraphicsscene.cpp \
-    mymap.cpp
+    mymap.cpp \
+    tarefa.cpp \
+    controller.cpp \
+    local.cpp
 
 HEADERS  += mainwindow.h \
     mygraphicsscene.h \
-    mymap.h
+    mymap.h \
+    tarefa.h \
+    defines.h \
+    controller.h \
+    local.h
 
 FORMS    += mainwindow.ui
 

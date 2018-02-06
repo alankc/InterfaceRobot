@@ -6,20 +6,22 @@
 #include <QString>
 #include <QLinkedList>
 
-typedef QPointF MyPoint;
+#include "local.h"
 
 class MyMap
 {
 private:
     QImage *image;
-    QLinkedList<MyPoint*> locals;
 
 public:
     MyMap();
+    QLinkedList<Local*> locals;
+
     void SetImage(QImage *image);
     QImage* GetImage();
-    bool InsertLocal(MyPoint* point);
-    MyPoint *RemoveLocal(MyPoint* point);
+    bool InsertLocal(Local* local);
+    Local *RemoveLocal(MyPoint point);
+    Local *GetLocalByName(QString name);
     bool SaveMap(QString fileName);
     bool LoadMap(QString fileName);
     QString LocalsToString();

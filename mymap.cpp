@@ -6,7 +6,6 @@
 MyMap::MyMap()
 {
     this->image = NULL;
-
 }
 
 void MyMap::SetImage(QImage *image)
@@ -19,32 +18,48 @@ QImage* MyMap::GetImage()
     return this->image;
 }
 
-bool MyMap::InsertLocal(MyPoint* point)
+bool MyMap::InsertLocal(Local *local)
 {
     for(auto l: locals)
     {
-        if ((l->rx() == point->rx()) && (l->ry() == point->ry()))
+        if ((l->point->rx() == local->point->rx()) && (l->point->ry() == local->point->ry()))
             return false;
     }
-    locals.append(point);
+    locals.append(local);
     return true;
 }
 
-MyPoint *MyMap::RemoveLocal(MyPoint* point)
+Local *MyMap::RemoveLocal(MyPoint point)
 {
-    for(auto a : locals)
+    for(auto l : locals)
     {
-        if ((a->rx() == point->rx()) && (a->ry() == point->ry()))
+        if ((l->point->rx() == point.rx()) && (l->point->ry() == point.ry()))
         {
-            locals.removeOne(a);
-            return a;
+            locals.removeOne(l);
+            return l;
         }
     }
     return NULL;
 }
 
+Local *MyMap::GetLocalByName(QString name)
+{
+    for(auto l : locals)
+    {
+        if (name == l->name)
+        {
+            return l;
+        }
+    }
+    return NULL;
+}
+
+
 bool MyMap::SaveMap(QString fileName)
 {
+    if (image == NULL)
+        return false;
+
     std::string path = fileName.toStdString();
 
     std::ofstream outFile;
@@ -73,8 +88,9 @@ bool MyMap::SaveMap(QString fileName)
     //Writing the locals
     for(auto l : locals)
     {
-        outFile.write((char*)&(l->rx()), sizeof(qreal));
-        outFile.write((char*)&(l->ry()), sizeof(qreal));
+        outFile.write(l->name, Local::MAXIMUM_NAME_SIZE);
+        outFile.write((char*)&(l->point->rx()), sizeof(qreal));
+        outFile.write((char*)&(l->point->ry()), sizeof(qreal));
     }
 
     outFile.close();
@@ -117,9 +133,13 @@ bool MyMap::LoadMap(QString fileName)
     for (int i = 0; i < numLocals; i++)
     {
         qreal x, y;
+        char* name = new char[Local::MAXIMUM_NAME_SIZE];
+
+        inFile.read(name, Local::MAXIMUM_NAME_SIZE);
         inFile.read((char*)&x, sizeof(qreal));
         inFile.read((char*)&y, sizeof(qreal));
-        locals.append(new QPointF(x, y));
+        Local* l = new Local(name, new QPointF(x, y));
+        locals.append(l);
     }
     inFile.close();
     return true;
@@ -128,9 +148,9 @@ bool MyMap::LoadMap(QString fileName)
 QString MyMap::LocalsToString()
 {
     QString ret = "";
-    for(auto a : locals)
+    for(auto l : locals)
     {
-        ret += QString::number(a->rx()) + " " + QString::number(a->ry()) + "\n";
+        ret += QString(l->name) + " - " + QString::number(l->point->rx()) + " " + QString::number(l->point->ry()) + "\n";
     }
     return ret;
 }
@@ -138,9 +158,5 @@ QString MyMap::LocalsToString()
 void MyMap::Clear()
 {
     this->image = NULL;
-    for(auto l : this->locals)
-    {
-        locals.removeOne(l);
-        delete(l);
-    }
+    locals.clear();
 }
